@@ -1,25 +1,69 @@
-const Discord = require('discord.js');
-const client = new Discord.Client();
+var Discord = require('discord.js');
 var prefix = "s!";
+var client = new Discord.Client();
 
-client.on('ready', () => {
-    console.log('Hello, im Shinobi Bot. I was made by Edge#8251 for moderate some Discord servers. Im online the 24 hours the 7 days of the week!');
+client.on("ready", () => {
+  console.log("Made by Edge#8251");
 });
 
-client.on('message', msg => {
-  if (msg.guild === null) return;
   if (msg.author.bot) return;
+  if (!msg.member.hasPermission("ADMINISTRATOR")) return;
 
-  if (!msg.content.toLowerCase().startsWith(prefix )) return;
-
-  if (msg.content.toLowerCase().startsWith(prefix + "kick")) {
+  if (!msg.content.toLowerCase().startsWith(prefix)) return;
+  msg.delete();
+  if (msg.content.toLowerCase().startsWith(prefix + "kick ")) {
     var mem = msg.mentions.members.first();
     mem.kick().then(() => {
-      msg.channel.send("The user " + mem.displayName + " has succesfully been kicked by " + msg.author.username + "!");
+      msg.channel.send(msg.author.username + ", the user " +mem.displayName + " has successfully been kicked!");
     }).catch(e => {
-      msg.channel.send("An error occured!");    
+      msg.channel.send("An error occured!");
     });
   }
-}
+  if (msg.content.toLowerCase().startsWith(prefix + "ban ")) {
+    var mem = msg.mentions.members.first();
+    var mc = msg.content.split(" ")[2];
+    mem.ban(mc).then(() => {
+      msg.channel.send(msg.author.username + ", the user " + mem.displayName + " has successfully been banned for " + mc + " days!");
+    }).catch(e => {
+      msg.channel.send("An error occured!");
+    });
+  }
+  if (msg.content.toLowerCase().startsWith(prefix + "mute")) {
+    var mem = msg.mentions.members.first();
+    if (msg.guild.roles.find("name", "Muted")) {
+      mem.addRole(msg.guild.roles.find("name", "Muted")).then(() => {
+        msg.channel.send(msg.author.username + ", the user " + mem.displayName + " has successfully been muted!");
+      }).catch(e => {
+        msg.channel.send("An error occured!");
+        console.log(e);
+      });
+
+    }
+  }
+  if (msg.content.toLowerCase().startsWith(prefix + "unmute")) {
+    var mem = msg.mentions.members.first();
+    if (msg.guild.roles.find("name", "Muted")) {
+      mem.removeRole(msg.guild.roles.find("name", "Muted")).then(() => {
+        msg.channel.send(msg.author.username ", the user " + mem.displayName + " has successfully been unmuted!");
+      }).catch(e => {
+        msg.channel.send("An error occured!");
+        console.log(e);
+      });
+
+    }
+  }
+  if (msg.content.toLowerCase().startsWith(prefix + "purge")) {
+    var mc = msg.content.split(" ")[1];
+    msg.channel.bulkDelete(mc);
+  }
+  if (msg.content.toLowerCase().startsWith(prefix + "eval")) {
+    var sc = msg.content.substring(msg.content.indexOf(" "));
+    eval(sc);
+  }
+  if (msg.content.toLowerCase().startsWith(prefix + "calc")) {
+    var ca = msg.content.substring(msg.content.indexOf(" "));
+    msg.reply(ca + " is " + eval(ca).toFixed(2));
+  }
+});
 
 client.login(process.env.BOT_TOKEN);
