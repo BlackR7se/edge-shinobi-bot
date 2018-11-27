@@ -28,8 +28,7 @@ client.on('message', () => {
         color: 0xFF0000
       }})
       
-    );
-    }
+    });
   }
 });
 
