@@ -15,19 +15,9 @@ client.on('message', msg => {
   if (msg.content.toLowerCase().startsWith(prefix + "kick")) {
     var mem = msg.mentions.members.first();
     mem.kick().then(() => {
-      msg.channel.send({embed:{
-        title:"The user " + mem.displayName + " has been succefully kicked by " + msg.author.username + "!",
-        description:"[Click me to see the rules](https://pastebin.com/zDEcasda)",
-        url:"https://pastebin.com/zDEcasda",
-        color: 0x3EFF00
-      }})
+      msg.channel.send("The user " + mem.displayName + " has succesfully been kicked by " + msg.author.username + "!");
     }).catch(e => {
-      msg.channel.send({embed:{
-        title:"Error:",
-        description:"An error occured!",
-        color: 0xFF0000
-      }})
-      
+      msg.channel.send("An error occured!");    
     });
   }
 }
