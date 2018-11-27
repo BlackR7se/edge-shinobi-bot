@@ -21,7 +21,7 @@ client.on('message', msg => {
         url:"https://pastebin.com/zDEcasda",
         color: 0x3EFF00
       }})
-    }).catch(e) {
+    }).catch(e => {
       msg.channel.send({embed:{
         title:"Error:",
         description:"An error occured!",
