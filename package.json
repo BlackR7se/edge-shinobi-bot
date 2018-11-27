@@ -1,14 +1,15 @@
 {
   "name": "Shinobi",
-  "description": "Private bot made by Edge#8251",
-  "version": "0.0.1",
+  "version": "1.0.0",
+  "description": "private bot",
   "main": "bot.js",
   "scripts": {
-    "start": "node bot.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "author": "Edge",
+  "license": "ISC",
   "dependencies": {
-    "discord.js": "11.1.0",
-    "request": "2.81.0",
-    "nodemon": "1.17.2"
+    "discord.js": "^11.3.2",
+    "nodemon": "^1.17.2"
   }
 }
