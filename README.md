@@ -1,2 +1,2 @@
 # edge-shinobi-bot
-private bot
+Made by Edge#8251
