@@ -1,69 +1,140 @@
-var Discord = require('discord.js');
-var prefix = "s!";
-var client = new Discord.Client();
+const botconfig = require("./botconfig.json");
+const tokenfile = require("./token.json");
+const Discord = require("discord.js");
 
-client.on("ready", () => {
-  console.log("Made by Edge#8251");
+const bot = new Discord.Client({disableEveryone: true});
+
+bot.on("ready", async () => {
+  console.log(`${bot.user.username} is online!`);
+
+  bot.user.setActivity("This Server.", {type: "WATCHING"});
+
+  //bot.user.setGame("on SourceCade!");
 });
 
-  if (msg.author.bot) return;
-  if (!msg.member.hasPermission("ADMINISTRATOR")) return;
+bot.on("message", async message => {
+  if(message.author.bot) return;
+  if(message.channel.type === "dm") return;
 
-  if (!msg.content.toLowerCase().startsWith(prefix)) return;
-  msg.delete();
-  if (msg.content.toLowerCase().startsWith(prefix + "kick ")) {
-    var mem = msg.mentions.members.first();
-    mem.kick().then(() => {
-      msg.channel.send(msg.author.username + ", the user " +mem.displayName + " has successfully been kicked!");
-    }).catch(e => {
-      msg.channel.send("An error occured!");
-    });
-  }
-  if (msg.content.toLowerCase().startsWith(prefix + "ban ")) {
-    var mem = msg.mentions.members.first();
-    var mc = msg.content.split(" ")[2];
-    mem.ban(mc).then(() => {
-      msg.channel.send(msg.author.username + ", the user " + mem.displayName + " has successfully been banned for " + mc + " days!");
-    }).catch(e => {
-      msg.channel.send("An error occured!");
-    });
-  }
-  if (msg.content.toLowerCase().startsWith(prefix + "mute")) {
-    var mem = msg.mentions.members.first();
-    if (msg.guild.roles.find("name", "Muted")) {
-      mem.addRole(msg.guild.roles.find("name", "Muted")).then(() => {
-        msg.channel.send(msg.author.username + ", the user " + mem.displayName + " has successfully been muted!");
-      }).catch(e => {
-        msg.channel.send("An error occured!");
-        console.log(e);
-      });
+  let prefix = botconfig.prefix;
+  let messageArray = message.content.split(" ");
+  let cmd = messageArray[0];
+  let args = messageArray.slice(1);
 
-    }
-  }
-  if (msg.content.toLowerCase().startsWith(prefix + "unmute")) {
-    var mem = msg.mentions.members.first();
-    if (msg.guild.roles.find("name", "Muted")) {
-      mem.removeRole(msg.guild.roles.find("name", "Muted")).then(() => {
-        msg.channel.send(msg.author.username ", the user " + mem.displayName + " has successfully been unmuted!");
-      }).catch(e => {
-        msg.channel.send("An error occured!");
-        console.log(e);
-      });
+  if(cmd === `${prefix}kick`){
 
-    }
+    let kUser = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
+    if(!kUser) return message.channel.send("Can't find user!");
+    let kReason = args.join(" ").slice(22);
+    if(!message.member.hasPermission("MANAGE_MESSAGES")) return message.channel.send("ERROR");
+    if(kUser.hasPermission("MANAGE_MESSAGES")) return message.channel.send("That person can't be kicked!");
+
+    let kickEmbed = new Discord.RichEmbed()
+    .setDescription("~Kick~")
+    .setColor("#e56b00")
+    .addField("Kicked User", `${kUser} with ID ${kUser.id}`)
+    .addField("Kicked By", `<@${message.author.id}> with ID ${message.author.id}`)
+    .addField("Kicked In", message.channel)
+    .addField("Time", message.createdAt)
+    .addField("Reason", kReason);
+
+    let kickChannel = message.guild.channels.find(`name`, "incidents");
+    if(!kickChannel) return message.channel.send("Can't find incidents channel.");
+
+    message.guild.member(kUser).kick(kReason);
+    kickChannel.send(kickEmbed);
+
+    return;
   }
-  if (msg.content.toLowerCase().startsWith(prefix + "purge")) {
-    var mc = msg.content.split(" ")[1];
-    msg.channel.bulkDelete(mc);
+
+  if(cmd === `${prefix}ban`){
+
+    let bUser = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
+    if(!bUser) return message.channel.send("Can't find user!");
+    let bReason = args.join(" ").slice(22);
+    if(!message.member.hasPermission("MANAGE_MEMBERS")) return message.channel.send("ERROR");
+    if(bUser.hasPermission("MANAGE_MESSAGES")) return message.channel.send("That person can't be kicked!");
+
+    let banEmbed = new Discord.RichEmbed()
+    .setDescription("~Ban~")
+    .setColor("#bc0000")
+    .addField("Banned User", `${bUser} with ID ${bUser.id}`)
+    .addField("Banned By", `<@${message.author.id}> with ID ${message.author.id}`)
+    .addField("Banned In", message.channel)
+    .addField("Time", message.createdAt)
+    .addField("Reason", bReason);
+
+    let incidentchannel = message.guild.channels.find(`name`, "bans");
+    if(!incidentchannel) return message.channel.send("Can't find incidents channel.");
+
+    message.guild.member(bUser).ban(bReason);
+    incidentchannel.send(banEmbed);
+
+
+    return;
   }
-  if (msg.content.toLowerCase().startsWith(prefix + "eval")) {
-    var sc = msg.content.substring(msg.content.indexOf(" "));
-    eval(sc);
+
+
+  if(cmd === `${prefix}report`){
+
+    //!report @ned this is the reason
+
+    let rUser = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
+    if(!rUser) return message.channel.send("Couldn't find user.");
+    let rreason = args.join(" ").slice(22);
+
+    let reportEmbed = new Discord.RichEmbed()
+    .setDescription("Reports")
+    .setColor("#15f153")
+    .addField("Reported User", `${rUser} with ID: ${rUser.id}`)
+    .addField("Reported By", `${message.author} with ID: ${message.author.id}`)
+    .addField("Channel", message.channel)
+    .addField("Time", message.createdAt)
+    .addField("Reason", rreason);
+
+    let reportschannel = message.guild.channels.find(`name`, "reports");
+    if(!reportschannel) return message.channel.send("Couldn't find reports channel.");
+
+
+    message.delete().catch(O_o=>{});
+    reportschannel.send(reportEmbed);
+
+    return;
   }
-  if (msg.content.toLowerCase().startsWith(prefix + "calc")) {
-    var ca = msg.content.substring(msg.content.indexOf(" "));
-    msg.reply(ca + " is " + eval(ca).toFixed(2));
+
+
+
+
+  if(cmd === `${prefix}serverinfo`){
+
+    let sicon = message.guild.iconURL;
+    let serverembed = new Discord.RichEmbed()
+    .setDescription("Server Information")
+    .setColor("#15f153")
+    .setThumbnail(sicon)
+    .addField("Server Name", message.guild.name)
+    .addField("Created On", message.guild.createdAt)
+    .addField("You Joined", message.member.joinedAt)
+    .addField("Total Members", message.guild.memberCount);
+
+    return message.channel.send(serverembed);
   }
+
+
+
+  if(cmd === `${prefix}botinfo`){
+
+    let bicon = bot.user.displayAvatarURL;
+    let botembed = new Discord.RichEmbed()
+    .setDescription("Bot Information")
+    .setColor("#15f153")
+    .setThumbnail(bicon)
+    .addField("Bot Name", bot.user.username)
+    .addField("Created On", bot.user.createdAt);
+
+    return message.channel.send(botembed);
+  }
+
 });
 
-client.login(process.env.BOT_TOKEN);
+bot.login(process.env.BOT_TOKEN);
