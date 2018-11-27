@@ -8,7 +8,6 @@ bot.on("ready", async () => {
 
   bot.user.setActivity("This Server.", {type: "WATCHING"});
 
-  //bot.user.setGame("on SourceCade!");
 });
 
 bot.on("message", async message => {
@@ -37,8 +36,8 @@ bot.on("message", async message => {
     .addField("Time", message.createdAt)
     .addField("Reason", kReason);
 
-    let kickChannel = message.guild.channels.find(`name`, "incidents");
-    if(!kickChannel) return message.channel.send("Can't find incidents channel.");
+    let kickChannel = message.guild.channels.find(`name`, "kicks");
+    if(!kickChannel) return message.channel.send("Can't find kicks channel.");
 
     message.guild.member(kUser).kick(kReason);
     kickChannel.send(kickEmbed);
@@ -64,7 +63,7 @@ bot.on("message", async message => {
     .addField("Reason", bReason);
 
     let incidentchannel = message.guild.channels.find(`name`, "bans");
-    if(!incidentchannel) return message.channel.send("Can't find incidents channel.");
+    if(!incidentchannel) return message.channel.send("Can't find bans channel.");
 
     message.guild.member(bUser).ban(bReason);
     incidentchannel.send(banEmbed);
