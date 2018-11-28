@@ -41,7 +41,7 @@ module.exports.run = async (bot, message, args) => {
   warnchannel.send(warnEmbed);
 
   if(warns[wUser.id].warns == 1){
-    let muterole = message.guild.roles.find(`name`, "[💤]Muted[💤]");
+    let muterole = message.guild.roles.find(`name`, "[ðŸ’¤]Muted[ðŸ’¤]");
     if(!muterole) return message.reply("Can't find the muted role.");
 
     let mutetime = "1h";
@@ -55,7 +55,7 @@ module.exports.run = async (bot, message, args) => {
   }
 
 if(warns[wUser.id].warns == 2){
-    let muterole = message.guild.roles.find(`name`, "[💤]Muted[💤]");
+    let muterole = message.guild.roles.find(`name`, "[ðŸ’¤]Muted[ðŸ’¤]");
     if(!muterole) return message.reply("Can't find the muted role.");
 
     let mutetime = "1d";
@@ -69,27 +69,6 @@ if(warns[wUser.id].warns == 2){
   }
   
   if(warns[wUser.id].warns == 3){
-    message.guild.member(wUser).kick(reason);
-    message.reply(`<@${wUser.id}> has been kicked.`)
-  }
-
-}
-  
- if(warns[wUser.id].warns == 4){
-    let muterole = message.guild.roles.find(`name`, "[💤]Muted[💤]");
-    if(!muterole) return message.reply("Can't find the muted role.");
-
-    let mutetime = "7d";
-    await(wUser.addRole(muterole.id));
-    message.channel.send(`<@${wUser.id}> has been temporarily muted`);
-
-    setTimeout(function(){
-      wUser.removeRole(muterole.id)
-      message.reply(`<@${wUser.id}> has been unmuted.`)
-    }, ms(mutetime))
-  }
-  
-  if(warns[wUser.id].warns == 5){
     message.guild.member(wUser).ban(reason);
     message.reply(`<@${wUser.id}> has been banned.`)
   }
