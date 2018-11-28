@@ -20,6 +20,7 @@ module.exports.run = async (bot, message, args) => {
     message.reply("Your DMs are locked. I cannot send you the HR commands.")
   }
 }
+}
 
 module.exports.help = {
   name: "help"
