@@ -4,7 +4,11 @@ const ms = require("ms");
 module.exports.run = async (bot, message, args) => {
 
   //!tempmute @user 1s/m/h/d
-
+  if(!message.member.hasPermissions("MANAGE_MESSAGES")) return message.reply("You don't have enough permissions.")
+  if(args[0] == "help"){
+  message.reply("Usage: s!mute <user> <1s/m/h/d>");
+  return;
+  }
   let tomute = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
   if(!tomute) return message.reply("Couldn't find user.");
   if(tomute.hasPermission("MANAGE_MESSAGES")) return message.reply("Can't mute them!");
