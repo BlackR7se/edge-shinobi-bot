@@ -4,7 +4,12 @@ const ms = require("ms");
 let warns = JSON.parse(fs.readFileSync("./warnings.json", "utf8"));
 
 module.exports.run = async (bot, message, args) => {
-
+  if(!message.member.hasPermission("MANAGE_MESSAGES")) return message.reply("You don't have enough permissions!");
+  if(args[0] == "help"){
+  message.reply("Usage: s!warnlevel <user>");
+  return;
+  }
+  
   if(!warns[wUser.id]) warns[wUser.id] = {
     warns: 0
   };
