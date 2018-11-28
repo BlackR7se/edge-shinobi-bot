@@ -3,7 +3,7 @@ const Discord = require("discord.js");
 module.exports.run = async (bot, message, args) => {
     if(!message.member.hasPermission("MANAGE_MESSAGES")) return message.channel.send("You don't have enough permissions!");
     if(args[0] == "help"){
-     message.reply("Usage: s!addrole <user> <role>");
+     message.reply("Usage: s!kick <user> <reason>");
      return;
     }
     let kUser = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
